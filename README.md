@@ -1,36 +1,119 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Code-Driven Narrative Portfolio
 
-## Getting Started
+An interactive terminal-style portfolio that presents your development journey as a debugging experience. Visitors explore your projects through terminal commands, creating an engaging and memorable experience.
 
-First, run the development server:
+## 🚀 Features
+
+- **Interactive Terminal**: Full terminal experience with command processing
+- **Typewriter Effects**: Realistic typing animations for enhanced storytelling  
+- **Modular Project System**: Easy to add new projects without touching UI code
+- **Multiple Project States**: 
+  - ✅ **Completed**: Fully showcased projects with code samples
+  - 📋 **Planned**: Coming soon projects with progress indicators
+  - 🔒 **Encrypted**: Mysterious projects to build intrigue
+- **Tab Completion**: Professional terminal experience with autocomplete
+- **Responsive Design**: Works on desktop and mobile devices
+- **TypeScript**: Full type safety and better developer experience
+
+## 📋 Available Commands
+
+Try these commands in the terminal:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+debug --help          # Show all available commands
+debug --about         # Personal information and bio
+debug --skills        # Technical skills showcase
+debug --contact       # Contact information
+debug --project-alpha # View your first project
+debug --project-beta  # Planned project preview
+debug --project-gamma # Another upcoming project  
+debug --project-delta # Encrypted/mysterious project
+debug --clear         # Clear terminal screen
+debug --history       # View command history
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠️ Technology Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Frontend**: React 19, Next.js 15, TypeScript
+- **Styling**: Tailwind CSS 4
+- **Font**: Geist (Sans & Mono)
+- **Development**: Turbopack, ESLint
+- **Deployment**: Ready for Vercel, Netlify, or any hosting platform
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📁 Project Structure
 
-## Learn More
+```
+src/
+├── app/
+│   ├── globals.css          # Global styles
+│   ├── layout.tsx           # Root layout with metadata
+│   └── page.tsx             # Main page (renders Terminal)
+├── components/
+│   └── Terminal.tsx         # Main terminal component
+└── data/
+    └── projects.ts          # Project data and configuration
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 🔧 Customization Guide
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Adding Your Projects
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Edit `src/data/projects.ts` to customize:
 
-## Deploy on Vercel
+1. **Personal Information**:
+```typescript
+export const personalInfo = {
+  name: 'Your Name Here',
+  title: 'Your Title Here', 
+  bio: 'Your bio here...',
+  skills: ['Your', 'Skills', 'Here'],
+  contact: {
+    email: 'your.email@example.com',
+    // ... other contact info
+  }
+};
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. **Adding New Projects**:
+```typescript
+{
+  id: 'project-epsilon',
+  name: 'My New Project',
+  status: 'completed', // or 'planned', 'in-progress', 'encrypted'
+  description: 'What this project does...',
+  technologies: ['React', 'Node.js', 'etc'],
+  debugCommand: 'debug --project-epsilon',
+  codeSnippet: `// Your code sample here`,
+  liveUrl: 'https://your-project.com',
+  githubUrl: 'https://github.com/you/project'
+}
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🚀 Getting Started
+
+1. **Install Dependencies**:
+```bash
+npm install
+```
+
+2. **Start Development Server**:
+```bash
+npm run dev
+```
+
+3. **Open in Browser**: Visit `http://localhost:3000`
+
+4. **Customize**: Edit `src/data/projects.ts` with your information
+
+## 📈 Development Workflow
+
+1. **Add New Project**: Update `src/data/projects.ts`
+2. **Test Commands**: Try in terminal interface  
+3. **Verify Styling**: Check responsive design
+4. **Deploy**: Ready for production
+
+---
+
+**Built with ❤️ and lots of ☕**
+
+*Happy debugging! 🐛➡️✨*
