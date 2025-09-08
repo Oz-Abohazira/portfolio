@@ -35,7 +35,7 @@ show --skills         # Technical skills and expertise
 show --contact        # Play contact reveal mini-game
 show --monitoring-system    # Centralized monitoring application
 show --sitekick-website-generator  # Website generation platform
-show --rebillia-frontend    # Responsive frontend development
+show --mobile-crm         # Mobile CRM business application
 clear                 # Clear terminal screen
 ```
 
@@ -53,11 +53,11 @@ clear                 # Clear terminal screen
 - Automated deployment for local service businesses
 - Advanced SEO optimizations and template system
 
-### Rebillia Platform Frontend
-**Technologies**: Angular, React, TypeScript, Bootstrap, SCSS, Tailwind CSS
-- Responsive front-end applications with modern web technologies
-- Cross-device compatibility (mobile, tablet, desktop)
-- Optimized user experience and engagement
+### Mobile CRM Business App
+**Technologies**: React Native, PostgreSQL, Node.js, Express.js, TypeScript
+- Mobile CRM application for small businesses to manage customer relationships
+- Cross-platform mobile app with robust data management
+- Customer tracking, lead management, and sales process optimization
 
 ## 💻 Local Development
 

@@ -141,38 +141,73 @@ function generateSiteConfig(subdomain, city, state, business_name) {
   },
 
   {
-    id: 'rebillia-frontend',
-    name: 'Rebillia Platform Frontend',
-    status: 'completed',
-    description: 'Developed responsive front-end applications using modern web technologies. Applied responsive design principles to ensure consistent display across mobile phones, tablets, and desktop computers. Optimized user experience and engagement.',
-    technologies: ['Angular', 'React', 'TypeScript', 'Bootstrap', 'SCSS', 'HTML', 'Tailwind CSS', 'JavaScript'],
-    debugCommand: 'show --rebillia-frontend',
+    id: 'mobile-crm',
+    name: 'Mobile CRM Business App',
+    status: 'in-progress',
+    description: 'A comprehensive mobile CRM application for small businesses to manage customer relationships, track leads, and streamline sales processes. Built with React Native for cross-platform compatibility and PostgreSQL for robust data management.',
+    technologies: ['React Native', 'PostgreSQL', 'Node.js', 'Express.js', 'TypeScript', 'Mobile Development', 'Cross-platform'],
+    debugCommand: 'show --mobile-crm',
     codeSnippet: `
-// React component with responsive design
-import React from 'react';
-import { styled } from '@emotion/styled';
+// React Native CRM component
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 
-const ResponsiveContainer = styled.div\`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1rem;
-  
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-  }
-\`;
+interface Customer {
+  id: string;
+  name: string;
+  email: string;
+  status: 'lead' | 'customer' | 'inactive';
+}
 
-export const RebilliaApp = () => {
-  return (
-    <ResponsiveContainer>
-      <div className="feature-card">
-        User-optimized experience
-      </div>
-    </ResponsiveContainer>
+export const CustomerList = () => {
+  const [customers, setCustomers] = useState<Customer[]>([]);
+
+  useEffect(() => {
+    // Fetch customers from PostgreSQL database
+    fetchCustomers();
+  }, []);
+
+  const fetchCustomers = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/api/customers');
+      const data = await response.json();
+      setCustomers(data);
+    } catch (error) {
+      console.error('Error fetching customers:', error);
+    }
+  };
+
+  const renderCustomer = ({ item }: { item: Customer }) => (
+    <TouchableOpacity style={styles.customerCard}>
+      <Text style={styles.customerName}>{item.name}</Text>
+      <Text style={styles.customerEmail}>{item.email}</Text>
+      <Text style={[styles.status, getStatusStyle(item.status)]}>
+        {item.status.toUpperCase()}
+      </Text>
+    </TouchableOpacity>
   );
-};`,
-    liveUrl: 'https://rebillia.com', // You can update this
-    completionPercentage: 100
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Customer Management</Text>
+      <FlatList
+        data={customers}
+        renderItem={renderCustomer}
+        keyExtractor={(item) => item.id}
+      />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: { flex: 1, padding: 20 },
+  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20 },
+  customerCard: { padding: 15, marginVertical: 5, backgroundColor: '#f5f5f5', borderRadius: 8 },
+  customerName: { fontSize: 18, fontWeight: 'bold' },
+  customerEmail: { fontSize: 14, color: '#666' },
+  status: { fontSize: 12, fontWeight: 'bold', marginTop: 5 }
+});`,
+    completionPercentage: 45
   }
 ];
 

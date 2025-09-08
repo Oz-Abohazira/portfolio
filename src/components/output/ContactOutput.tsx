@@ -27,6 +27,32 @@ export const ContactOutput: React.FC<ContactOutputProps> = ({ onBackClick }) => 
   const [attempts, setAttempts] = useState(3);
   const [showHint, setShowHint] = useState(true);
   const [isCorrect, setIsCorrect] = useState(false);
+  const [autoSelected, setAutoSelected] = useState(false);
+
+  // Handle when attempts reach 0 - automatically select correct answer
+  useEffect(() => {
+    if (attempts === 0 && !showResult) {
+      const challenge = challenges[currentChallenge];
+      setSelectedAnswer(challenge.correct);
+      setIsCorrect(true);
+      setAutoSelected(true);
+      setUnlockedContacts(prev => [...prev, challenge.reward]);
+      setShowResult(true);
+      
+      setTimeout(() => {
+        if (currentChallenge < challenges.length - 1) {
+          setCurrentChallenge(prev => prev + 1);
+          setSelectedAnswer(null);
+          setShowResult(false);
+          setShowHint(true);
+          setAttempts(3);
+          setAutoSelected(false);
+        } else {
+          setGameComplete(true);
+        }
+      }, 2500);
+    }
+  }, [attempts, currentChallenge, showResult]);
 
   const challenges: Challenge[] = [
     {
@@ -123,6 +149,7 @@ console.log(result);`,
     const challenge = challenges[currentChallenge];
     const correct = selectedAnswer === challenge.correct;
     setIsCorrect(correct);
+    setAutoSelected(false); // Reset auto-selected flag for manual attempts
 
     if (correct) {
       setUnlockedContacts(prev => [...prev, challenge.reward]);
@@ -263,6 +290,10 @@ console.log(result);`,
         )}
       </div>
 
+      <p className="text-sm text-gray-400 mb-4 italic">
+        Solve the Challenge to gain full contact access
+      </p>
+
       {/* Progress Bar */}
       <div className="bg-gray-900 rounded-lg p-3 border border-gray-700 mb-3">
         <div className="flex justify-between items-center mb-2">
@@ -323,7 +354,9 @@ console.log(result);`,
           <div className={`mb-3 p-2 rounded text-center text-sm font-semibold ${
             isCorrect ? 'bg-green-900/50 text-green-400 border border-green-500' : 'bg-red-900/50 text-red-400 border border-red-500'
           }`}>
-            {isCorrect ? '🎉 Correct! Contact unlocked!' : '❌ Incorrect. Try again!'}
+            {isCorrect ? (
+              autoSelected ? '🤝 Let me help you there! Contact unlocked!' : '🎉 Correct! Contact unlocked!'
+            ) : '❌ Incorrect. Try again!'}
           </div>
         )}
 
