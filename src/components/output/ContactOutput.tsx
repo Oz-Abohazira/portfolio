@@ -29,31 +29,6 @@ export const ContactOutput: React.FC<ContactOutputProps> = ({ onBackClick }) => 
   const [isCorrect, setIsCorrect] = useState(false);
   const [autoSelected, setAutoSelected] = useState(false);
 
-  // Handle when attempts reach 0 - automatically select correct answer
-  useEffect(() => {
-    if (attempts === 0 && !showResult) {
-      const challenge = challenges[currentChallenge];
-      setSelectedAnswer(challenge.correct);
-      setIsCorrect(true);
-      setAutoSelected(true);
-      setUnlockedContacts(prev => [...prev, challenge.reward]);
-      setShowResult(true);
-      
-      setTimeout(() => {
-        if (currentChallenge < challenges.length - 1) {
-          setCurrentChallenge(prev => prev + 1);
-          setSelectedAnswer(null);
-          setShowResult(false);
-          setShowHint(true);
-          setAttempts(3);
-          setAutoSelected(false);
-        } else {
-          setGameComplete(true);
-        }
-      }, 2500);
-    }
-  }, [attempts, currentChallenge, showResult]);
-
   const challenges: Challenge[] = [
     {
       id: 'array-method',
@@ -124,6 +99,31 @@ console.log(result);`,
       hint: 'Single loop through array, Set operations are O(1) → linear time'
     }
   ];
+
+  // Handle when attempts reach 0 - automatically select correct answer
+  useEffect(() => {
+    if (attempts === 0 && !showResult) {
+      const challenge = challenges[currentChallenge];
+      setSelectedAnswer(challenge.correct);
+      setIsCorrect(true);
+      setAutoSelected(true);
+      setUnlockedContacts(prev => [...prev, challenge.reward]);
+      setShowResult(true);
+      
+      setTimeout(() => {
+        if (currentChallenge < challenges.length - 1) {
+          setCurrentChallenge(prev => prev + 1);
+          setSelectedAnswer(null);
+          setShowResult(false);
+          setShowHint(true);
+          setAttempts(3);
+          setAutoSelected(false);
+        } else {
+          setGameComplete(true);
+        }
+      }, 2500);
+    }
+  }, [attempts, currentChallenge, showResult, challenges]);
 
   const contactInfo = {
     email: personalInfo.contact.email,
@@ -239,11 +239,11 @@ console.log(result);`,
           <div className="text-center mb-4">
             <div className="text-3xl mb-2">🛡️</div>
             <h3 className="text-base font-semibold text-green-400">Security Clearance: APPROVED</h3>
-            <p className="text-xs text-gray-300">You've demonstrated sufficient technical knowledge</p>
+            <p className="text-xs text-gray-300">You&apos;ve demonstrated sufficient technical knowledge</p>
           </div>
 
           <div className="grid gap-3">
-            {Object.entries(contactInfo).map(([type, info]) => (
+            {Object.entries(contactInfo).map(([type]) => (
               <div key={type} className="bg-gray-900/50 rounded-lg p-3 border border-gray-700">
                 <div className="flex items-center space-x-3">
                   <span className="text-xl">{contactIcons[type as keyof typeof contactIcons]}</span>
@@ -266,7 +266,7 @@ console.log(result);`,
         <div className="bg-gray-800 rounded-lg p-3 border border-gray-600">
           <h3 className="text-green-400 font-mono mb-2 text-sm">Ready to Connect</h3>
           <p className="text-gray-300 text-xs">
-            I'm always open to discussing new opportunities, collaborating on projects, 
+            I&apos;m always open to discussing new opportunities, collaborating on projects, 
             or just having a conversation about technology and software development.
           </p>
         </div>

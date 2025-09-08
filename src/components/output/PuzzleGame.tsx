@@ -28,7 +28,6 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({ onComplete, onStartTrans
   const [selectedPiece, setSelectedPiece] = useState<number | null>(null);
   const [isComplete, setIsComplete] = useState(false);
   const [moveCount, setMoveCount] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
   const [transitionStyle, setTransitionStyle] = useState<React.CSSProperties>({});
 
   // Initialize puzzle pieces (3x3 grid = 9 pieces)
@@ -91,7 +90,6 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({ onComplete, onStartTrans
         setTimeout(() => {
           if (onStartTransition) {
             onStartTransition((targetPosition: ImagePosition) => {
-              setIsTransitioning(true);
               
               // Calculate exact transform from puzzle image to target position
               const puzzleElement = document.querySelector('[data-puzzle-complete]') as HTMLElement;

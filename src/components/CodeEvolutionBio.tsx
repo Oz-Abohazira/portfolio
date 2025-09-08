@@ -113,7 +113,7 @@ export default ozAbuhatzira;`,
       clearTimeout(bioTimer);
       clearInterval(styleTimer);
     };
-  }, []);
+  }, [codeStyles.length]);
 
   return (
     <div className="space-y-8">

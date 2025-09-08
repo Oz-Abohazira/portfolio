@@ -14,7 +14,6 @@ export default function ModularTerminal() {
   const [currentInput, setCurrentInput] = useState<string>('');
   const [outputContent, setOutputContent] = useState<OutputContent>({ type: 'default' });
   const [puzzleCompleted, setPuzzleCompleted] = useState<boolean>(false);
-  const [targetImagePosition, setTargetImagePosition] = useState<any>(null);
   
   // Refs
   const inputRef = useRef<HTMLInputElement>(null);
@@ -70,7 +69,7 @@ export default function ModularTerminal() {
   };
 
   // Handle puzzle transition start - get position and execute transition
-  const handlePuzzleTransitionStart = (callback: (targetPosition: any) => void) => {
+  const handlePuzzleTransitionStart = (callback: (targetPosition: { x: number; y: number; width: number; height: number; centerX: number; centerY: number }) => void) => {
     // Temporarily switch to about to measure position, but don't show it yet
     const tempDiv = document.createElement('div');
     tempDiv.style.position = 'absolute';

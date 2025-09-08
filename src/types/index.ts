@@ -9,7 +9,7 @@ export interface TerminalLine {
 
 export interface OutputContent {
   type: 'default' | 'about' | 'skills' | 'contact' | 'project' | 'help';
-  data?: any;
+  data?: Record<string, unknown>;
 }
 
 export interface Project {

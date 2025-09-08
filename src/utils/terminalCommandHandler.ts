@@ -185,13 +185,13 @@ export class TerminalCommandHandler {
                 this.typewriterMessage('WARNING: Classified project detected', () => {
                   setTimeout(() => {
                     this.typewriterMessage(`Loading ${project.name} details →`, () => {
-                      this.setOutputContent({ type: 'project', data: project });
+                      this.setOutputContent({ type: 'project', data: project as unknown as Record<string, unknown> });
                     }, 20);
                   }, 200);
                 }, 20);
               } else {
                 this.typewriterMessage(`Loading ${project.name} details →`, () => {
-                  this.setOutputContent({ type: 'project', data: project });
+                  this.setOutputContent({ type: 'project', data: project as unknown as Record<string, unknown> });
                 }, 20);
               }
             }, 200);

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { projects, debugCommands, personalInfo, Project } from '@/data/projects';
+import { OutputContent } from '@/types';
 import CodeEvolutionBio from './CodeEvolutionBio';
 
 interface TerminalLine {
@@ -11,15 +12,10 @@ interface TerminalLine {
   timestamp: Date;
 }
 
-interface OutputContent {
-  type: 'default' | 'about' | 'skills' | 'contact' | 'project' | 'help';
-  data?: any;
-}
-
 export default function Terminal() {
   const [history, setHistory] = useState<TerminalLine[]>([]);
   const [currentInput, setCurrentInput] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
+  const [isTyping] = useState(false);
   const [outputContent, setOutputContent] = useState<OutputContent>({ type: 'default' });
   const lineIdCounterRef = useRef(0);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -90,17 +86,6 @@ export default function Terminal() {
         }
       }, index * 80); // 80ms per character for dramatic effect
     });
-  };
-
-  const addLineWithAnimation = (type: 'command' | 'output' | 'error', content: string) => {
-    lineIdCounterRef.current += 1;
-    const newLine: TerminalLine = {
-      id: `line-${lineIdCounterRef.current}`,
-      type,
-      content,
-      timestamp: new Date()
-    };
-    setHistory(prev => [...prev, newLine]);
   };
 
   // Auto-scroll to bottom when new content is added
@@ -258,11 +243,11 @@ export default function Terminal() {
                 addLine('output', 'WARNING: Classified project detected');
                 setTimeout(() => {
                   addLine('output', `Loading ${project.name} details →`);
-                  setOutputContent({ type: 'project', data: project });
+                  setOutputContent({ type: 'project', data: project as unknown as Record<string, unknown> });
                 }, 300);
               } else {
                 addLine('output', `Loading ${project.name} details →`);
-                setOutputContent({ type: 'project', data: project });
+                setOutputContent({ type: 'project', data: project as unknown as Record<string, unknown> });
               }
             }, 400);
           }, 300);
@@ -398,7 +383,7 @@ export default function Terminal() {
         );
 
       case 'project':
-        const project = outputContent.data as Project;
+        const project = outputContent.data as unknown as Project;
         return (
           <div className="space-y-6">
             <div className="bg-gradient-to-r from-purple-900 to-blue-900 p-6 rounded-lg">

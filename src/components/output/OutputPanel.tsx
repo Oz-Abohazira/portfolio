@@ -1,5 +1,5 @@
 import React from 'react';
-import { OutputContent } from '@/types';
+import { OutputContent, Project } from '@/types';
 import { HelpOutput } from './HelpOutput';
 import { AboutOutput } from './AboutOutput';
 import { SkillsOutput } from './SkillsOutput';
@@ -12,7 +12,7 @@ interface OutputPanelProps {
   onCommandExecute?: (command: string) => void;
   onBackToMenu?: () => void;
   onPuzzleComplete?: () => void;
-  onPuzzleTransitionStart?: (callback: (targetPosition: any) => void) => void;
+  onPuzzleTransitionStart?: (callback: (targetPosition: { x: number; y: number; width: number; height: number; centerX: number; centerY: number }) => void) => void;
   puzzleCompleted?: boolean;
 }
 
@@ -35,7 +35,7 @@ export const OutputPanel: React.FC<OutputPanelProps> = ({
       case 'contact':
         return <ContactOutput onBackClick={onBackToMenu} />;
       case 'project':
-        return content.data ? <ProjectOutput project={content.data} onBackClick={onBackToMenu} /> : null;
+        return content.data ? <ProjectOutput project={content.data as unknown as Project} onBackClick={onBackToMenu} /> : null;
       default:
         if (!puzzleCompleted) {
           return <PuzzleGame onComplete={onPuzzleComplete} onStartTransition={onPuzzleTransitionStart} />;
