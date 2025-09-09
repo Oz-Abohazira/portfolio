@@ -28,6 +28,92 @@ export const ContactOutput: React.FC<ContactOutputProps> = ({ onBackClick }) => 
   const [showHint, setShowHint] = useState(true);
   const [isCorrect, setIsCorrect] = useState(false);
   const [autoSelected, setAutoSelected] = useState(false);
+  const [progressLoaded, setProgressLoaded] = useState(false);
+  const [isLoadingProgress, setIsLoadingProgress] = useState(false);
+  const [hasInitialized, setHasInitialized] = useState(false);
+
+  // Load saved progress from localStorage on component mount
+  useEffect(() => {
+    const savedProgress = localStorage.getItem('contactChallengeProgress');
+    if (savedProgress) {
+      try {
+        const progress = JSON.parse(savedProgress);
+
+        // Check if progress is less than 30 days old
+        const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
+        const isExpired = progress.lastUpdated && (Date.now() - progress.lastUpdated) > thirtyDaysMs;
+
+        if (!isExpired) {
+          setIsLoadingProgress(true); // Prevent saving during load
+
+          // Set all state at once to avoid triggering multiple saves
+          setCurrentChallenge(progress.currentChallenge || 0);
+          setUnlockedContacts(progress.unlockedContacts || []);
+          setGameComplete(progress.gameComplete || false);
+          setAttempts(progress.attempts || 3);
+          setProgressLoaded(true);
+
+          // Check if all contacts are unlocked (fallback check)
+          const allContacts = ['email', 'phone', 'linkedin', 'github'];
+          const hasAllContacts = allContacts.every(contact =>
+            (progress.unlockedContacts || []).includes(contact)
+          );
+
+          if (hasAllContacts && !progress.gameComplete) {
+            setGameComplete(true);
+          }
+
+          // Allow saving again after a short delay
+          setTimeout(() => {
+            setIsLoadingProgress(false);
+            setProgressLoaded(false);
+            setHasInitialized(true); // Mark initialization as complete
+          }, 3000);
+        } else {
+          // Clear expired progress
+          localStorage.removeItem('contactChallengeProgress');
+        }
+      } catch (error) {
+        console.warn('Failed to load contact challenge progress:', error);
+        localStorage.removeItem('contactChallengeProgress');
+      }
+    } else {
+      // No saved progress found - mark as initialized
+      setHasInitialized(true);
+    }
+  }, []); // Empty dependency array - only run once on mount
+
+  // Save progress to localStorage whenever state changes
+  useEffect(() => {
+    // Don't save while loading progress or before initialization
+    if (isLoadingProgress || !hasInitialized) {
+      return;
+    }
+
+    const progress = {
+      currentChallenge,
+      unlockedContacts,
+      gameComplete,
+      attempts,
+      lastUpdated: Date.now()
+    };
+    localStorage.setItem('contactChallengeProgress', JSON.stringify(progress));
+  }, [currentChallenge, unlockedContacts, gameComplete, attempts, isLoadingProgress, hasInitialized]);
+
+  // Utility function to reset progress (for development/testing)
+  const resetProgress = () => {
+    localStorage.removeItem('contactChallengeProgress');
+    setCurrentChallenge(0);
+    setUnlockedContacts([]);
+    setGameComplete(false);
+    setAttempts(3);
+    setSelectedAnswer(null);
+    setShowResult(false);
+    setShowHint(true);
+    setIsCorrect(false);
+    setAutoSelected(false);
+    setProgressLoaded(false);
+  };
 
   const challenges: Challenge[] = [
     {
@@ -100,7 +186,15 @@ console.log(result);`,
     }
   ];
 
-  // Handle when attempts reach 0 - automatically select correct answer
+  // Check if game should be complete based on unlocked contacts
+  useEffect(() => {
+    const allContacts = ['email', 'phone', 'linkedin', 'github'];
+    const hasAllContacts = allContacts.every(contact => unlockedContacts.includes(contact));
+    
+    if (hasAllContacts && !gameComplete) {
+      setGameComplete(true);
+    }
+  }, [unlockedContacts, gameComplete]);  // Handle auto-selection when attempts run out
   useEffect(() => {
     if (attempts === 0 && !showResult) {
       const challenge = challenges[currentChallenge];
@@ -264,9 +358,9 @@ console.log(result);`,
         </div>
 
         <div className="bg-gray-800 rounded-lg p-3 border border-gray-600">
-          <h3 className="text-green-400 font-mono mb-2 text-sm">Ready to Connect</h3>
-          <p className="text-gray-300 text-xs">
-            I&apos;m always open to discussing new opportunities, collaborating on projects, 
+          <h3 className="text-green-400 font-mono mb-2 text-base">Ready to Connect</h3>
+          <p className="text-gray-300 text-sm">
+            I&apos;m always open to discussing new opportunities, collaborating on projects,
             or just having a conversation about technology and software development.
           </p>
         </div>
@@ -279,7 +373,14 @@ console.log(result);`,
   return (
     <div className="p-4 text-gray-300 h-full overflow-y-auto">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-bold text-cyan-400">🔐 Contact Security Challenge</h2>
+        <div className="flex items-center gap-3">
+          <h2 className="text-lg font-bold text-cyan-400">🔐 Contact Security Challenge</h2>
+          {progressLoaded && (
+            <span className="px-2 py-1 bg-blue-900/50 text-blue-300 text-xs rounded border border-blue-500/50 font-mono animate-in fade-in">
+              📚 Progress Loaded
+            </span>
+          )}
+        </div>
         {onBackClick && (
           <button
             onClick={onBackClick}

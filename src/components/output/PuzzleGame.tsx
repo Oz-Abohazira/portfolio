@@ -200,7 +200,7 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({ onComplete, onStartTrans
           </div>
 
           <div className="text-xs text-gray-500 space-y-1">
-            <p>💡 Hint: Only 6 pieces are out of place - this should take exactly 6 moves!</p>
+            <p>💡 Hint: Only 6 pieces are out of place - this should take exactly 3 moves!</p>
             <p>✨ Green border = correct position</p>
             <p>🎯 Goal: Swap the misplaced pieces back to their correct spots</p>
           </div>
@@ -230,7 +230,7 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({ onComplete, onStartTrans
 
           <div className="space-y-2">
             <p className="text-cyan-400 font-mono">🎯 Puzzle Complete! Transitioning to portfolio...</p>
-            <p className="text-gray-400 text-sm">Your photo will remain visible in the about section</p>
+            <p className="text-gray-400 text-sm">Follow the instructions on the Terminal on the Left</p>
             <div className="flex justify-center">
               <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-cyan-400"></div>
             </div>

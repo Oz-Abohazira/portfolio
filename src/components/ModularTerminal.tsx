@@ -22,26 +22,54 @@ export default function ModularTerminal() {
   // Command handler instance
   const commandHandler = useRef<TerminalCommandHandler | null>(null);
 
+  // Check for saved puzzle completion state on mount
+  useEffect(() => {
+    const savedPuzzleState = localStorage.getItem('portfolio-puzzle-completed');
+    if (savedPuzzleState === 'true') {
+      setPuzzleCompleted(true);
+      // Set initial content to about section for returning users
+      setOutputContent({ type: 'about' });
+    }
+  }, []);
+
   // Initialize command handler and welcome message
   useEffect(() => {
     commandHandler.current = new TerminalCommandHandler(setHistory, setOutputContent);
+    
+    // Check if access was previously granted
+    const savedPuzzleState = localStorage.getItem('portfolio-puzzle-completed');
+    const accessGranted = savedPuzzleState === 'true';
     
     // Start with SLOW dramatic typewriter for the first message
     setTimeout(() => {
       commandHandler.current?.typewriterMessage('Initializing Code-Driven Portfolio...', () => {
         // Then continue with FASTER typewriter for the rest
         setTimeout(() => {
-          commandHandler.current?.typewriterMessage('🧩 System ready. Awaiting puzzle confirmation...', () => {
-            setTimeout(() => {
-              commandHandler.current?.typewriterMessage('💡 Complete the visual puzzle to unlock portfolio access.', () => {
-                setTimeout(() => {
-                  commandHandler.current?.addLine('output', '');
-                }, 200);
-              }, 20); // Faster typewriter (was 30)
-            }, 300);
-          }, 20); // Faster typewriter (was 30)
+          if (accessGranted) {
+            // User has already solved the puzzle - show access granted message
+            commandHandler.current?.typewriterMessage('🔓 Access previously granted. Welcome back!', () => {
+              setTimeout(() => {
+                commandHandler.current?.typewriterMessage('💡 Use "show --help" to explore available commands.', () => {
+                  setTimeout(() => {
+                    commandHandler.current?.addLine('output', '');
+                  }, 200);
+                }, 20);
+              }, 300);
+            }, 20);
+          } else {
+            // First time visitor - show puzzle prompt
+            commandHandler.current?.typewriterMessage('🧩 System ready. Awaiting puzzle confirmation...', () => {
+              setTimeout(() => {
+                commandHandler.current?.typewriterMessage('💡 Complete the visual puzzle to unlock portfolio access.', () => {
+                  setTimeout(() => {
+                    commandHandler.current?.addLine('output', '');
+                  }, 200);
+                }, 20);
+              }, 300);
+            }, 20);
+          }
         }, 400);
-      }, 80); // Faster dramatic typing (was 120)
+      }, 80);
     }, 500);
   }, []);
 
@@ -120,6 +148,9 @@ export default function ModularTerminal() {
   // Handle puzzle completion
   const handlePuzzleComplete = () => {
     setPuzzleCompleted(true);
+    // Save completion state to localStorage for persistence
+    localStorage.setItem('portfolio-puzzle-completed', 'true');
+    
     // Immediately go to about section without terminal animations
     commandHandler.current?.setOutputContentDirect({ type: 'about' });
     
@@ -127,7 +158,7 @@ export default function ModularTerminal() {
     setTimeout(() => {
       commandHandler.current?.typewriterMessage('🎉 Puzzle completed! Portfolio access granted.', () => {
         setTimeout(() => {
-          commandHandler.current?.typewriterMessage('To see all options type show --help or press the back button', () => {
+          commandHandler.current?.typewriterMessage('To see all options type <span class="text-green-400 font-mono bg-gray-800 px-2 py-1 rounded border border-green-500">show --help</span> or press the <span class="px-3 py-1 bg-gray-700 text-green-400 font-mono text-sm rounded border border-green-500 inline-block">← Back to Menu</span> button on the top right', () => {
             setTimeout(() => {
               commandHandler.current?.addLine('output', '');
             }, 100);

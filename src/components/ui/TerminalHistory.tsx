@@ -6,6 +6,11 @@ interface TerminalHistoryProps {
 }
 
 export const TerminalHistory: React.FC<TerminalHistoryProps> = ({ history }) => {
+  // Check if content contains HTML tags
+  const containsHtml = (content: string) => {
+    return /<[^>]*>/.test(content);
+  };
+
   return (
     <div className="space-y-1 mb-4">
       {history.map((line) => (
@@ -19,7 +24,11 @@ export const TerminalHistory: React.FC<TerminalHistoryProps> = ({ history }) => 
               : 'text-gray-300'
           }`}
         >
-          <span>{line.content}</span>
+          {containsHtml(line.content) ? (
+            <span dangerouslySetInnerHTML={{ __html: line.content }} />
+          ) : (
+            <span>{line.content}</span>
+          )}
         </div>
       ))}
     </div>
