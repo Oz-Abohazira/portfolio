@@ -24,6 +24,7 @@ export interface Project {
   githubUrl?: string;
   completionPercentage?: number;
   expectedCompletion?: string;
+  images?: string[];
 }
 
 export interface PersonalInfo {

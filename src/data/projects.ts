@@ -1,19 +1,7 @@
 // Project data structure for the code-driven narrative portfolio
 // This file centralizes all project information and makes it easy to add new projects
 
-export interface Project {
-  id: string;
-  name: string;
-  status: 'completed' | 'in-progress' | 'planned' | 'encrypted';
-  description: string;
-  technologies: string[];
-  debugCommand: string;
-  codeSnippet?: string;
-  liveUrl?: string;
-  githubUrl?: string;
-  completionPercentage?: number;
-  expectedCompletion?: string;
-}
+import { Project } from '@/types';
 
 // Main projects data - based on professional experience
 export const projects: Project[] = [
@@ -86,7 +74,12 @@ def run_scheduler():
         except Exception as e:
             print(f"Scheduler error: {e}")
             threading.Event().wait(60)`,
-    completionPercentage: 100
+    completionPercentage: 100,
+    images: [
+      'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWExYTFhIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiMwMGZmODgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Db21pbmcgU29vbjwvdGV4dD48L3N2Zz4=', // Dashboard screenshot
+      'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWExYTFhIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiMwMGZmODgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Db21pbmcgU29vbjwvdGV4dD48L3N2Zz4=', // Reports interface
+      'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWExYTFhIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiMwMGZmODgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Db21pbmcgU29vbjwvdGV4dD48L3N2Zz4='  // System monitoring view
+    ]
   },
   
   {
@@ -97,7 +90,6 @@ def run_scheduler():
     technologies: ['Node.js', 'Express.js', 'Vercel API', 'HTML5/CSS3', 'JavaScript ES6+', 'SMTP Integration', 'Template Engine', 'SEO Optimization'],
     debugCommand: 'show --sitekick-website-generator',
     codeSnippet: `
-
 // Initialize Vercel API client
 function initializeVercelAPI() {
   const vercelConfig = getVercelConfig();
@@ -119,25 +111,13 @@ function initializeVercelAPI() {
   });
   
   return { VERCEL_API_TOKEN, TEAM_ID };
-}
-
-/**
- * Generate site configuration for a given subdomain and city
- */
-function generateSiteConfig(subdomain, city, state, business_name) {
-  // Get unique content variations for this site
-  const uniqueContent = generateUniqueContent(city, subdomain);
-
-  // Return the site configuration with all pages
-  return {
-    subdomain: subdomain,
-    city: city,
-    state: state,
-    business_name: business_name,
-    uniqueContent: uniqueContent
-  };
 }`,
-    completionPercentage: 100
+    completionPercentage: 100,
+    images: [
+      'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWExYTFhIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiMwMGZmODgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Db21pbmcgU29vbjwvdGV4dD48L3N2Zz4=', // API dashboard
+      'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWExYTFhIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiMwMGZmODgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Db21pbmcgU29vbjwvdGV4dD48L3N2Zz4=', // Template system
+      'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWExYTFhIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiMwMGZmODgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Db21pbmcgU29vbjwvdGV4dD48L3N2Zz4='  // Deployment interface
+    ]
   },
 
   {
@@ -148,9 +128,8 @@ function generateSiteConfig(subdomain, city, state, business_name) {
     technologies: ['React Native', 'PostgreSQL', 'Node.js', 'Express.js', 'TypeScript', 'Mobile Development', 'Cross-platform'],
     debugCommand: 'show --mobile-crm',
     codeSnippet: `
-// React Native CRM component
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet } from 'react-native';
 
 interface Customer {
   id: string;
@@ -163,7 +142,6 @@ export const CustomerList = () => {
   const [customers, setCustomers] = useState<Customer[]>([]);
 
   useEffect(() => {
-    // Fetch customers from PostgreSQL database
     fetchCustomers();
   }, []);
 
@@ -177,25 +155,28 @@ export const CustomerList = () => {
     }
   };
 
-  const renderCustomer = ({ item }: { item: Customer }) => (
-    <TouchableOpacity style={styles.customerCard}>
-      <Text style={styles.customerName}>{item.name}</Text>
-      <Text style={styles.customerEmail}>{item.email}</Text>
-      <Text style={[styles.status, getStatusStyle(item.status)]}>
-        {item.status.toUpperCase()}
-      </Text>
-    </TouchableOpacity>
-  );
+  const renderCustomer = ({ item }: { item: Customer }) => {
+    return (
+      // Customer card component would be rendered here
+      // Using React.createElement instead of JSX for template literal compatibility
+      React.createElement(View, { style: styles.customerCard }, [
+        React.createElement(Text, { style: styles.customerName, key: 'name' }, item.name),
+        React.createElement(Text, { style: styles.customerEmail, key: 'email' }, item.email),
+        React.createElement(Text, { style: styles.status, key: 'status' }, item.status.toUpperCase())
+      ])
+    );
+  };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Customer Management</Text>
-      <FlatList
-        data={customers}
-        renderItem={renderCustomer}
-        keyExtractor={(item) => item.id}
-      />
-    </View>
+    React.createElement(View, { style: styles.container }, [
+      React.createElement(Text, { style: styles.title, key: 'title' }, 'Customer Management'),
+      React.createElement(FlatList, {
+        data: customers,
+        renderItem: renderCustomer,
+        keyExtractor: (item: Customer) => item.id,
+        key: 'list'
+      })
+    ])
   );
 };
 
@@ -207,7 +188,7 @@ const styles = StyleSheet.create({
   customerEmail: { fontSize: 14, color: '#666' },
   status: { fontSize: 12, fontWeight: 'bold', marginTop: 5 }
 });`,
-    completionPercentage: 45
+    completionPercentage: 15
   }
 ];
 
@@ -240,7 +221,7 @@ export const commands = [
 export const personalInfo = {
   name: 'Oz Abuhatzira',
   title: 'Full Stack Software Developer',
-  bio: 'Results-driven software developer with 9+ years of experience delivering high-impact solutions across web, enterprise, and system environments. Skilled in full-stack development, process automation, and complex system integration, with a proven record of reducing operational timelines, optimizing workflows, and building custom tools that improve efficiency. Adept at collaborating across teams, mentoring developers, and independently solving technical challenges in both software and hardware domains.',
+  bio: 'Results-driven software developer with 9+ years of experience delivering high-impact solutions across web, enterprise, and system environments. Skilled in full-stack development, process automation, and complex system integration, with a proven record of reducing operational timelines, optimizing workflows, and building custom tools that improve efficiency.',
   location: 'Dunwoody, GA 30338',
   phone: '470 784 9378',
   skills: {
@@ -269,6 +250,7 @@ export const personalInfo = {
     'Integration & Tools': [
       'System Monitoring',
       'Process Automation',
+      'Networking',
       'Git',
       'Jira',
     ],

@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { projects, debugCommands, personalInfo, Project } from '@/data/projects';
-import { OutputContent } from '@/types';
+import { projects, debugCommands, personalInfo } from '@/data/projects';
+import { OutputContent, Project } from '@/types';
 import CodeEvolutionBio from './CodeEvolutionBio';
 
 interface TerminalLine {
