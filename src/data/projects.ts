@@ -111,7 +111,41 @@ function initializeVercelAPI() {
   });
   
   return { VERCEL_API_TOKEN, TEAM_ID };
-}`,
+}
+/**
+ * Generate site configuration for a given subdomain and city
+ */
+function generateSiteConfig(subdomain, city, state, business_name) {
+  // Get unique content variations for this site
+  const uniqueContent = generateUniqueContent(city, subdomain);
+
+  // Return the site configuration with all pages
+  return {
+    subdomain: subdomain,
+    city: city,
+    state: state,
+    business_name: business_name,
+    uniqueContent: uniqueContent
+  };
+}
+  function generateSitemap(baseUrl, city, state, business_name, logoUrl) {
+  const currentDate = new Date().toISOString();
+
+  return \`<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+    <!-- Homepage - Highest Priority -->
+    <url>
+        <loc>\${baseUrl}/</loc>
+        <lastmod>\${currentDate}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+        <image:image>
+            <image:loc>\${logoUrl || "https:// \`
+`,
     completionPercentage: 100,
     images: [
       'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWExYTFhIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiMwMGZmODgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Db21pbmcgU29vbjwvdGV4dD48L3N2Zz4=', // API dashboard
@@ -219,7 +253,7 @@ export const commands = [
 
 // Personal information (easily customizable)
 export const personalInfo = {
-  name: 'Oz Abuhatzira',
+  name: 'Oz Abohazira',
   title: 'Full Stack Software Developer',
   bio: 'Results-driven software developer with 9+ years of experience delivering high-impact solutions across web, enterprise, and system environments. Skilled in full-stack development, process automation, and complex system integration, with a proven record of reducing operational timelines, optimizing workflows, and building custom tools that improve efficiency.',
   location: 'Dunwoody, GA 30338',
