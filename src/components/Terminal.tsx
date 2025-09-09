@@ -217,8 +217,6 @@ export default function Terminal() {
         // Add system cleared message after clearing
         setTimeout(() => {
           addLine('output', 'System cleared successfully');
-          addLine('output', 'Console ready for new commands');
-          addLine('output', 'Type "show --help" to see available options');
           addLine('output', '');
         }, 100);
         break;

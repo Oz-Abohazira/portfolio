@@ -235,6 +235,7 @@ export const debugCommands = [
   'show --contact',
   ...projects.map(p => p.debugCommand.replace('debug', 'show')),
   '--clear',
+  'reset-progress',
   'show --history'
 ];
 
@@ -247,7 +248,8 @@ export const commands = [
     command: p.debugCommand.replace('debug', 'show'), 
     description: `View ${p.name} project details` 
   })),
-  { command: '--clear', description: 'Clear terminal output' },
+  { command: '--clear', description: 'Clear terminal and reset to initial state' },
+  { command: 'reset-progress', description: 'Reset puzzle and contact challenge progress' },
   { command: 'show --help', description: 'Display available commands' }
 ];
 

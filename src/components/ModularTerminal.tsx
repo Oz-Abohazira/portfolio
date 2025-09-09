@@ -22,54 +22,26 @@ export default function ModularTerminal() {
   // Command handler instance
   const commandHandler = useRef<TerminalCommandHandler | null>(null);
 
-  // Check for saved puzzle completion state on mount
-  useEffect(() => {
-    const savedPuzzleState = localStorage.getItem('portfolio-puzzle-completed');
-    if (savedPuzzleState === 'true') {
-      setPuzzleCompleted(true);
-      // Set initial content to about section for returning users
-      setOutputContent({ type: 'about' });
-    }
-  }, []);
-
   // Initialize command handler and welcome message
   useEffect(() => {
     commandHandler.current = new TerminalCommandHandler(setHistory, setOutputContent);
-    
-    // Check if access was previously granted
-    const savedPuzzleState = localStorage.getItem('portfolio-puzzle-completed');
-    const accessGranted = savedPuzzleState === 'true';
     
     // Start with SLOW dramatic typewriter for the first message
     setTimeout(() => {
       commandHandler.current?.typewriterMessage('Initializing Code-Driven Portfolio...', () => {
         // Then continue with FASTER typewriter for the rest
         setTimeout(() => {
-          if (accessGranted) {
-            // User has already solved the puzzle - show access granted message
-            commandHandler.current?.typewriterMessage('🔓 Access previously granted. Welcome back!', () => {
-              setTimeout(() => {
-                commandHandler.current?.typewriterMessage('💡 Use "show --help" to explore available commands.', () => {
-                  setTimeout(() => {
-                    commandHandler.current?.addLine('output', '');
-                  }, 200);
-                }, 20);
-              }, 300);
-            }, 20);
-          } else {
-            // First time visitor - show puzzle prompt
-            commandHandler.current?.typewriterMessage('🧩 System ready. Awaiting puzzle confirmation...', () => {
-              setTimeout(() => {
-                commandHandler.current?.typewriterMessage('💡 Complete the visual puzzle to unlock portfolio access.', () => {
-                  setTimeout(() => {
-                    commandHandler.current?.addLine('output', '');
-                  }, 200);
-                }, 20);
-              }, 300);
-            }, 20);
-          }
+          commandHandler.current?.typewriterMessage('🧩 System ready. Awaiting puzzle confirmation...', () => {
+            setTimeout(() => {
+              commandHandler.current?.typewriterMessage('💡 Complete the visual puzzle to unlock portfolio access.', () => {
+                setTimeout(() => {
+                  commandHandler.current?.addLine('output', '');
+                }, 200);
+              }, 20); // Faster typewriter (was 30)
+            }, 300);
+          }, 20); // Faster typewriter (was 30)
         }, 400);
-      }, 80);
+      }, 80); // Faster dramatic typing (was 120)
     }, 500);
   }, []);
 
@@ -85,6 +57,52 @@ export default function ModularTerminal() {
       terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
     }
   }, [history]);
+
+  // Handle reset progress command
+  useEffect(() => {
+    if (outputContent.type === 'reset-progress') {
+      // Reset puzzle completion
+      setPuzzleCompleted(false);
+
+      // Clear contact challenge progress from localStorage
+      localStorage.removeItem('contactChallengeProgress');
+
+      // Reset output content to default (which will show the puzzle)
+      setOutputContent({ type: 'default' });
+
+      console.log('🔄 Progress reset: Puzzle and contact challenges have been reset');
+    }
+  }, [outputContent.type]);
+
+  // Handle clear terminal command - reset to initial state
+  useEffect(() => {
+    if (outputContent.type === 'clear-terminal') {
+      // Reset puzzle completion
+      setPuzzleCompleted(false);
+
+      // Reset output content to default
+      setOutputContent({ type: 'default' });
+
+      // Reinitialize welcome message after a short delay
+      setTimeout(() => {
+        if (commandHandler.current) {
+          commandHandler.current.typewriterMessage('Initializing Code-Driven Portfolio...', () => {
+            setTimeout(() => {
+              commandHandler.current?.typewriterMessage('🧩 System ready. Awaiting puzzle confirmation...', () => {
+                setTimeout(() => {
+                  commandHandler.current?.typewriterMessage('💡 Complete the visual puzzle to unlock portfolio access.', () => {
+                    setTimeout(() => {
+                      commandHandler.current?.addLine('output', '');
+                    }, 200);
+                  }, 20);
+                }, 300);
+              }, 20);
+            }, 400);
+          }, 80);
+        }
+      }, 500);
+    }
+  }, [outputContent.type]);
 
   // Handle command execution
   const handleCommand = (command: string) => {
@@ -148,9 +166,6 @@ export default function ModularTerminal() {
   // Handle puzzle completion
   const handlePuzzleComplete = () => {
     setPuzzleCompleted(true);
-    // Save completion state to localStorage for persistence
-    localStorage.setItem('portfolio-puzzle-completed', 'true');
-    
     // Immediately go to about section without terminal animations
     commandHandler.current?.setOutputContentDirect({ type: 'about' });
     

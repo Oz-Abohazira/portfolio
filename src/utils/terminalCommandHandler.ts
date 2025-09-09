@@ -148,23 +148,35 @@ export class TerminalCommandHandler {
         }, 20);
         break;
 
+      case 'reset-progress':
+        this.typewriterMessage('Initiating system reset protocol...', () => {
+          setTimeout(() => {
+            this.typewriterMessage('Clearing puzzle completion status...', () => {
+              setTimeout(() => {
+                this.typewriterMessage('Resetting contact challenge progress...', () => {
+                  setTimeout(() => {
+                    this.typewriterMessage('System reset complete. Puzzle and challenges have been reset.', () => {
+                      setTimeout(() => {
+                        this.typewriterMessage('You can now complete the puzzle and challenges again!', () => {
+                          // Reset will be handled by the parent component
+                          this.setOutputContent({ type: 'reset-progress' });
+                        }, 20);
+                      }, 200);
+                    }, 20);
+                  }, 200);
+                }, 20);
+              }, 300);
+            }, 20);
+          }, 300);
+        }, 20);
+        break;
+
       case '--clear':
         this.history = [];
         this.setHistory(this.history);
-        this.setOutputContent({ type: 'default' });
+        this.setOutputContent({ type: 'clear-terminal' });
         setTimeout(() => {
           this.typewriterMessage('System cleared successfully', () => {
-            setTimeout(() => {
-              this.typewriterMessage('Console ready for new commands', () => {
-                setTimeout(() => {
-                  this.typewriterMessage('Type "show --help" to see available options', () => {
-                    setTimeout(() => {
-                      this.addLine('output', '');
-                    }, 100);
-                  }, 20);
-                }, 150);
-              }, 20);
-            }, 150);
           }, 20);
         }, 100);
         break;

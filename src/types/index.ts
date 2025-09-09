@@ -8,7 +8,7 @@ export interface TerminalLine {
 }
 
 export interface OutputContent {
-  type: 'default' | 'about' | 'skills' | 'contact' | 'project' | 'help';
+  type: 'default' | 'about' | 'skills' | 'contact' | 'project' | 'help' | 'reset-progress' | 'clear-terminal';
   data?: Record<string, unknown>;
 }
 
