@@ -201,7 +201,10 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({ onComplete, onStartTrans
 
           <div className="text-xs text-gray-500 space-y-1">
             <p>💡 Hint: Only 6 pieces are out of place - this should take exactly 3 moves!</p>
-            <p>✨ Green border = correct position</p>
+            <div className="w-3 h-3 bg-green-500/80 rounded-full flex items-center justify-center text-white text-xs">
+                  ✓
+            </div>
+            <p>Green check mark = correct position</p>
             <p>🎯 Goal: Swap the misplaced pieces back to their correct spots</p>
           </div>
         </>

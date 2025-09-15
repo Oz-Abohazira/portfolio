@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Project } from '@/types';
 
 interface ProjectOutputProps {
@@ -7,7 +7,49 @@ interface ProjectOutputProps {
 }
 
 export const ProjectOutput: React.FC<ProjectOutputProps> = ({ project, onBackClick }) => {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+
+  const navigateImage = (direction: 'next' | 'prev') => {
+    if (!project.images || project.images.length === 0) return;
+    
+    const totalImages = project.images.length;
+    if (selectedImageIndex === null) return;
+    
+    if (direction === 'next') {
+      setSelectedImageIndex((selectedImageIndex + 1) % totalImages);
+    } else {
+      setSelectedImageIndex(selectedImageIndex === 0 ? totalImages - 1 : selectedImageIndex - 1);
+    }
+  };
+
+  const closeModal = () => setSelectedImageIndex(null);
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (selectedImageIndex === null) return;
+      
+      switch (e.key) {
+        case 'ArrowLeft':
+          e.preventDefault();
+          navigateImage('prev');
+          break;
+        case 'ArrowRight':
+          e.preventDefault();
+          navigateImage('next');
+          break;
+        case 'Escape':
+          e.preventDefault();
+          closeModal();
+          break;
+      }
+    };
+
+    if (selectedImageIndex !== null) {
+      document.addEventListener('keydown', handleKeyPress);
+      return () => document.removeEventListener('keydown', handleKeyPress);
+    }
+  }, [selectedImageIndex, project.images]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -81,16 +123,21 @@ export const ProjectOutput: React.FC<ProjectOutputProps> = ({ project, onBackCli
               <div
                 key={index}
                 className="relative group cursor-pointer"
-                onClick={() => setSelectedImage(image)}
+                onClick={() => setSelectedImageIndex(index)}
               >
                 <img
                   src={image}
                   alt={`${project.name} screenshot ${index + 1}`}
-                  className="w-full h-32 object-cover rounded-lg border border-gray-600 hover:border-cyan-500 transition-colors duration-200"
+                  className="w-full h-32 object-cover rounded-lg border border-gray-600 hover:border-cyan-500 transition-colors duration-200 bg-gray-100"
+                  onLoad={() => console.log('✅ Image loaded and should be visible:', image)}
+                  onError={(e) => {
+                    console.error('❌ Failed to load image:', image);
+                  }}
+                  style={{ minHeight: '128px' }}
                 />
-                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200 rounded-lg flex items-center justify-center">
-                  <span className="text-white opacity-0 group-hover:opacity-100 text-sm font-mono">
-                    Click to enlarge
+                <div className="absolute inset-0 bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200 rounded-lg flex items-center justify-center">
+                  <span className="text-black opacity-0 group-hover:opacity-100 text-sm font-mono">
+                    🔍︎
                   </span>
                 </div>
               </div>
@@ -156,23 +203,57 @@ export const ProjectOutput: React.FC<ProjectOutputProps> = ({ project, onBackCli
       )}
 
       {/* Image Modal */}
-      {selectedImage && (
+      {selectedImageIndex !== null && project.images && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
-          onClick={() => setSelectedImage(null)}
+          className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-6"
+          onClick={closeModal}
         >
-          <div className="relative max-w-4xl max-h-full">
+          <div className="relative max-w-6xl max-h-[90vh] w-full">
             <img
-              src={selectedImage}
-              alt="Project screenshot"
-              className="max-w-full max-h-full object-contain rounded-lg"
+              src={project.images[selectedImageIndex]}
+              alt={`Project screenshot ${selectedImageIndex + 1}`}
+              className="w-full h-full object-contain rounded-lg shadow-2xl"
             />
+            
+            {/* Close button */}
             <button
-              onClick={() => setSelectedImage(null)}
-              className="absolute top-2 right-2 text-white bg-gray-800 hover:bg-gray-700 rounded-full w-8 h-8 flex items-center justify-center text-xl"
+              onClick={closeModal}
+              className="absolute top-4 right-4 text-white bg-gray-800 hover:bg-gray-700 rounded-full w-10 h-10 flex items-center justify-center text-2xl font-bold shadow-lg"
             >
               ×
             </button>
+            
+            {/* Navigation buttons */}
+            {project.images.length > 1 && (
+              <>
+                {/* Previous button */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigateImage('prev');
+                  }}
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white bg-gray-800 hover:bg-gray-700 rounded-full w-12 h-12 flex items-center justify-center text-2xl font-bold shadow-lg transition-colors duration-200"
+                >
+                  ‹
+                </button>
+                
+                {/* Next button */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigateImage('next');
+                  }}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white bg-gray-800 hover:bg-gray-700 rounded-full w-12 h-12 flex items-center justify-center text-2xl font-bold shadow-lg transition-colors duration-200"
+                >
+                  ›
+                </button>
+                
+                {/* Image counter */}
+                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white bg-gray-800 bg-opacity-75 px-3 py-1 rounded-full text-sm font-mono">
+                  {selectedImageIndex + 1} / {project.images.length}
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
