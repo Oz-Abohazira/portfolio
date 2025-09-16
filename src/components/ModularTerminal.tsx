@@ -197,9 +197,9 @@ export default function ModularTerminal() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-green-400 font-mono">
-      <div className="container mx-auto p-4">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-[calc(100vh-2rem)]">
+    <div className="h-full bg-black text-green-400 font-mono">
+      <div className="container mx-auto p-4 h-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-full">
           
           {/* Terminal Panel */}
           <div className="bg-gray-900 rounded-lg border border-gray-700 shadow-2xl flex flex-col">

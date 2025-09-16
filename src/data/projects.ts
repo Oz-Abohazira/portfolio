@@ -156,73 +156,112 @@ function generateSiteConfig(subdomain, city, state, business_name) {
 
   {
     id: 'mobile-crm',
-    name: 'Mobile CRM Business App',
+    name: 'Wellnest',
     status: 'in-progress',
-    description: 'A comprehensive mobile CRM application for small businesses to manage customer relationships, track leads, and streamline sales processes. Built with React Native for cross-platform compatibility and PostgreSQL for robust data management.',
-    technologies: ['React Native', 'PostgreSQL', 'Node.js', 'Express.js', 'TypeScript', 'Mobile Development', 'Cross-platform'],
+    description: 'A dual-interface mobile appointment management app designed for independent beauty and wellness professionals. SlotSpot enables business owners to manage clients, schedules, and automated follow-ups through an intuitive dashboard, while clients can self-book appointments via shared links with SMS verification—no app downloads or account creation required. Features smart client management, visual calendar scheduling, automated reminders, and service history tracking optimized for non-technical users',
+    technologies: ['Ionic 7+', 'Angular 17+', 'TypeScript', 'Capacitor', 'SCSS/CSS3', 'PWA', 'Push Notifications'],
     debugCommand: 'show --mobile-crm',
     codeSnippet: `
-import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+  constructor(
+    private formBuilder: FormBuilder,
+    private modalController: ModalController,
+    private clientService: ClientService,
+    private appointmentService: AppointmentService,
+    private serviceService: ServiceService,
+    private toastController: ToastController
+  ) {
+    addIcons({
+      close,
+      person,
+      cut,
+      calendar,
+      timeOutline,
+      documentText,
+      checkmark,
+      time,
+    });
 
-interface Customer {
-  id: string;
-  name: string;
-  email: string;
-  status: 'lead' | 'customer' | 'inactive';
-}
+    this.appointmentForm = this.formBuilder.group({
+      clientId: ['', Validators.required],
+      serviceId: ['', Validators.required],
+      date: ['', Validators.required],
+      startTime: ['', Validators.required],
+      duration: [60, [Validators.required, Validators.min(15)]],
+      price: [0, [Validators.required, Validators.min(0)]],
+      notes: [''],
+    });
+  }
 
-export const CustomerList = () => {
-  const [customers, setCustomers] = useState<Customer[]>([]);
+  ngOnInit() {
+    this.loadClients();
+    this.loadServices();
+    this.setupFormValidation();
+    this.generateTimeSlots(); // Generate initial time slots
 
-  useEffect(() => {
-    fetchCustomers();
-  }, []);
-
-  const fetchCustomers = async () => {
-    try {
-      const response = await fetch('http://localhost:3000/api/customers');
-      const data = await response.json();
-      setCustomers(data);
-    } catch (error) {
-      console.error('Error fetching customers:', error);
+    if (this.appointment) {
+      this.isEditMode = true;
+      this.populateForm();
+    } else {
+      this.setInitialValues();
     }
-  };
 
-  const renderCustomer = ({ item }: { item: Customer }) => {
-    return (
-      // Customer card component would be rendered here
-      // Using React.createElement instead of JSX for template literal compatibility
-      React.createElement(View, { style: styles.customerCard }, [
-        React.createElement(Text, { style: styles.customerName, key: 'name' }, item.name),
-        React.createElement(Text, { style: styles.customerEmail, key: 'email' }, item.email),
-        React.createElement(Text, { style: styles.status, key: 'status' }, item.status.toUpperCase())
-      ])
-    );
-  };
+    // Set initial focus after view is initialized
+    setTimeout(() => this.setInitialFocus(), 100);
 
-  return (
-    React.createElement(View, { style: styles.container }, [
-      React.createElement(Text, { style: styles.title, key: 'title' }, 'Customer Management'),
-      React.createElement(FlatList, {
-        data: customers,
-        renderItem: renderCustomer,
-        keyExtractor: (item: Customer) => item.id,
-        key: 'list'
-      })
-    ])
-  );
-};
+    // Add keyboard event listeners for accessibility
+    this.setupKeyboardListeners();
+  }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20 },
-  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20 },
-  customerCard: { padding: 15, marginVertical: 5, backgroundColor: '#f5f5f5', borderRadius: 8 },
-  customerName: { fontSize: 18, fontWeight: 'bold' },
-  customerEmail: { fontSize: 14, color: '#666' },
-  status: { fontSize: 12, fontWeight: 'bold', marginTop: 5 }
-});`,
-    completionPercentage: 15
+  ngAfterViewInit() {
+    // Additional focus management after view is fully initialized
+    setTimeout(() => {
+      this.ensureModalFocus();
+    }, 200);
+  }
+
+  ngOnDestroy() {
+    // Clean up keyboard listeners
+    this.removeKeyboardListeners();
+    // Unsubscribe from internal subscriptions
+    this.subscriptions.unsubscribe();
+  }
+
+  private loadClients() {
+    const sub = this.clientService.clients$.subscribe((clients) => {
+      this.clients = clients;
+    });
+    this.subscriptions.add(sub);
+  }
+
+  private loadServices() {
+    const sub = this.serviceService.services$.subscribe((services) => {
+      this.services = services;
+    });
+    this.subscriptions.add(sub);
+  }
+
+  private setupFormValidation() {
+    // Update price when service changes
+    const sub = this.appointmentForm
+      .get('serviceId')
+      ?.valueChanges.subscribe((serviceId) => {
+        const service = this.services.find((s) => s.id === serviceId);
+        if (service) {
+          this.appointmentForm.patchValue({
+            duration: service.duration,
+            price: service.price,
+          });
+        }
+      });
+    if (sub) this.subscriptions.add(sub);
+  }`,
+    completionPercentage: 85,
+    images: [
+      '/crm/dashboard.png',
+      '/crm/calendar.png',
+      '/crm/edit-appt.png',
+      '/crm/settings.png',
+    ],
   }
 ];
 

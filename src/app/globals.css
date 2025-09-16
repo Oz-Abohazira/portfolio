@@ -20,9 +20,10 @@
 }
 
 body {
-  background: var(--background);
+  background: #000000;
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
 }
 
 /* 3D CSS Transform Utilities */

@@ -208,53 +208,59 @@ export const ProjectOutput: React.FC<ProjectOutputProps> = ({ project, onBackCli
           className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-6"
           onClick={closeModal}
         >
-          <div className="relative max-w-6xl max-h-[90vh] w-full">
-            <img
-              src={project.images[selectedImageIndex]}
-              alt={`Project screenshot ${selectedImageIndex + 1}`}
-              className="w-full h-full object-contain rounded-lg shadow-2xl"
-            />
-            
-            {/* Close button */}
-            <button
-              onClick={closeModal}
-              className="absolute top-4 right-4 text-white bg-gray-800 hover:bg-gray-700 rounded-full w-10 h-10 flex items-center justify-center text-2xl font-bold shadow-lg"
-            >
-              ×
-            </button>
-            
-            {/* Navigation buttons */}
+          {/* Modal content: navigation buttons sit outside the image box so they don't block content */}
+          <div
+            className="relative flex items-center justify-center gap-6 max-w-[95vw] max-h-[95vh] w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Left navigation (outside image) */}
             {project.images.length > 1 && (
-              <>
-                {/* Previous button */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigateImage('prev');
-                  }}
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white bg-gray-800 hover:bg-gray-700 rounded-full w-12 h-12 flex items-center justify-center text-2xl font-bold shadow-lg transition-colors duration-200"
-                >
-                  ‹
-                </button>
-                
-                {/* Next button */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigateImage('next');
-                  }}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white bg-gray-800 hover:bg-gray-700 rounded-full w-12 h-12 flex items-center justify-center text-2xl font-bold shadow-lg transition-colors duration-200"
-                >
-                  ›
-                </button>
-                
-                {/* Image counter */}
-                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white bg-gray-800 bg-opacity-75 px-3 py-1 rounded-full text-sm font-mono">
-                  {selectedImageIndex + 1} / {project.images.length}
-                </div>
-              </>
+              <button
+                onClick={(e) => { e.stopPropagation(); navigateImage('prev'); }}
+                className="text-white bg-gray-800 hover:bg-gray-700 rounded-full w-12 h-12 flex items-center justify-center text-2xl font-bold shadow-lg transition-colors duration-200"
+                aria-label="Previous image"
+              >
+                ‹
+              </button>
+            )}
+
+            {/* Image container - has its own rounded background so controls don't overlap */}
+            <div className="bg-gray-900 rounded-lg overflow-hidden flex items-center justify-center" style={{ maxWidth: '80vw', maxHeight: '80vh' }}>
+              <img
+                src={project.images[selectedImageIndex]}
+                alt={`Project screenshot ${selectedImageIndex + 1}`}
+                className="w-auto h-auto max-w-full max-h-[80vh] object-contain bg-gray-900"
+                style={{ display: 'block' }}
+              />
+            </div>
+
+            {/* Right navigation (outside image) */}
+            {project.images.length > 1 && (
+              <button
+                onClick={(e) => { e.stopPropagation(); navigateImage('next'); }}
+                className="text-white bg-gray-800 hover:bg-gray-700 rounded-full w-12 h-12 flex items-center justify-center text-2xl font-bold shadow-lg transition-colors duration-200"
+                aria-label="Next image"
+              >
+                ›
+              </button>
             )}
           </div>
+
+          {/* Close button placed outside the image box (top-right of the viewport) */}
+          <button
+            onClick={closeModal}
+            className="absolute top-6 right-6 text-white bg-gray-800 hover:bg-gray-700 rounded-full w-10 h-10 flex items-center justify-center text-2xl font-bold shadow-lg"
+            aria-label="Close image viewer"
+          >
+            ×
+          </button>
+
+          {/* Image counter placed below the image area (not overlaying) */}
+          {project.images.length > 0 && (
+            <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-white bg-gray-800 bg-opacity-75 px-3 py-1 rounded-full text-sm font-mono">
+              {selectedImageIndex + 1} / {project.images.length}
+            </div>
+          )}
         </div>
       )}
     </div>
