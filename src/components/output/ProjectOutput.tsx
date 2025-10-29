@@ -147,8 +147,18 @@ export const ProjectOutput: React.FC<ProjectOutputProps> = ({ project, onBackCli
       {project.images && project.images.length > 0 && (
         <div className="mb-6">
           <h3 className="text-cyan-300 font-mono mb-3 text-lg">Project Gallery</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {project.images.map((image, index) => (
+          {/* Check if images array contains only empty strings */}
+          {project.images.every(image => image.trim() === '') ? (
+            <div className="bg-gray-800 border border-gray-600 rounded-lg p-8 text-center">
+              <div className="text-4xl mb-3">🖼️</div>
+              <h4 className="text-cyan-400 font-mono text-lg mb-2">Coming Soon</h4>
+              <p className="text-gray-400 font-mono text-sm">
+                Project gallery will be updated with as development progresses
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {project.images.filter(image => image.trim() !== '').map((image, index) => (
               <div
                 key={index}
                 className="relative group cursor-pointer"
@@ -171,7 +181,8 @@ export const ProjectOutput: React.FC<ProjectOutputProps> = ({ project, onBackCli
                 </div>
               </div>
             ))}
-          </div>
+            </div>
+          )}
         </div>
       )}
 

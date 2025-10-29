@@ -24,15 +24,15 @@ export const projects: Project[] = [
       "Cloudinary",
       "Multer"
     ],
-    debugCommand: "show --salon-iq",
+    debugCommand: "show --project-salon-iq",
     codeSnippet: ``,
     completionPercentage: 70,
     githubUrl: "https://github.com/Oz-Abohazira/SalonIQ",
     liveUrl: "https://salon-iq-nine.vercel.app/",
     images: [
-      "/saloniq/dashboard.png",
-      "/saloniq/booking-flow.png", 
-      "/saloniq/service-management.png", 
+      "",
+      "", 
+      "", 
     ],
   },
   {
@@ -50,7 +50,7 @@ export const projects: Project[] = [
       "Template Engine",
       "SEO Optimization",
     ],
-    debugCommand: "show --sitekick-website-generator",
+    debugCommand: "show --project-sitekick",
     codeSnippet: `
 // Initialize Vercel API client
 function initializeVercelAPI() {
@@ -132,7 +132,7 @@ function generateSiteConfig(subdomain, city, state, business_name) {
       "PWA",
       "Push Notifications",
     ],
-    debugCommand: "show --mobile-crm",
+    debugCommand: "show --project-mobile-crm",
     codeSnippet: `
   constructor(
     private formBuilder: FormBuilder,
@@ -250,7 +250,7 @@ function generateSiteConfig(subdomain, city, state, business_name) {
       "Network Configuration",
       "Health Statistics",
     ],
-    debugCommand: "show --monitoring-system",
+    debugCommand: "show --project-monitoring-system",
     codeSnippet: `
 def validate_time_format(time_str):
     """Validate time format (HH:MM in 24-hour format) for single or comma-separated times"""
