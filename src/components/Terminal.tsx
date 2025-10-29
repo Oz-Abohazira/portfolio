@@ -144,6 +144,7 @@ export default function Terminal() {
       '',
       '✨ System initialization complete!',
       'Portfolio console ready for exploration',
+      'I will start you off by showing you how to navigate',
       'Type "show --help" to discover available commands',
       'Begin your journey through my digital portfolio',
       ''
@@ -156,8 +157,10 @@ export default function Terminal() {
           // Focus the input after boot sequence
           setTimeout(() => {
             inputRef.current?.focus();
-          }, 200);
+            handleCommand('show --help');
+          }, 400);
         }
+        
       }, index * 400);
     });
   }, [addLine]);
@@ -397,7 +400,7 @@ export default function Terminal() {
                     className="max-w-[99%] bg-gray-800 p-3 rounded border-l-4 border-cyan-400 hover:bg-gray-700 hover:border-cyan-300 cursor-pointer transition-all duration-300 group hover:translate-x-1 hover:shadow-lg animate-in fade-in slide-in-from-bottom-4"
                     style={{ animationDelay: `${index * 100}ms` }}
                     onClick={() => {
-                      setCurrentInput(cmd);
+                      // setCurrentInput(cmd);
                       handleCommand(cmd);
                     }}
                   >
@@ -413,7 +416,7 @@ export default function Terminal() {
                   className="max-w-[99%] bg-gray-800 p-3 rounded border-l-4 border-cyan-400 hover:bg-gray-700 hover:border-cyan-300 cursor-pointer transition-all duration-300 group hover:translate-x-1 hover:shadow-lg animate-in fade-in slide-in-from-bottom-4"
                   style={{ animationDelay: `${debugCommands.length * 100}ms` }}
                   onClick={() => {
-                    setCurrentInput('show --help');
+                    // setCurrentInput('show --help');
                     handleCommand('show --help');
                   }}
                 >
