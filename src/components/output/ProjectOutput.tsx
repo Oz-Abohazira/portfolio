@@ -114,6 +114,35 @@ export const ProjectOutput: React.FC<ProjectOutputProps> = ({ project, onBackCli
         </div>
       </div>
 
+      {/* Live URL and GitHub Links */}
+      {(project.liveUrl || project.githubUrl) && (
+        <div className="mb-6">
+          <h3 className="text-green-300 font-mono mb-3 text-lg">Project Links</h3>
+          <div className="flex flex-wrap gap-3">
+            {project.liveUrl && (
+              <a
+                href={project.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white font-mono text-sm rounded-lg transition-colors duration-200 border border-cyan-500 hover:border-cyan-400"
+              >
+                🌐 View Live Demo
+              </a>
+            )}
+            {project.githubUrl && (
+              <a
+                href={project.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white font-mono text-sm rounded-lg transition-colors duration-200 border border-gray-600 hover:border-gray-500"
+              >
+                📋 View Source Code
+              </a>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Project Images - Gallery */}
       {project.images && project.images.length > 0 && (
         <div className="mb-6">
@@ -157,47 +186,6 @@ export const ProjectOutput: React.FC<ProjectOutputProps> = ({ project, onBackCli
             <pre className="p-4 text-sm text-gray-300 overflow-x-auto font-mono leading-relaxed">
               <code className="language-javascript">{project.codeSnippet}</code>
             </pre>
-          </div>
-        </div>
-      )}
-
-      {/* Links */}
-      {(project.liveUrl || project.githubUrl) && (
-        <div className="mb-6">
-          <h3 className="text-green-300 font-mono mb-3 text-lg">Project Links</h3>
-          <div className="space-y-3">
-            {project.liveUrl && (
-              <div className="flex items-center space-x-3">
-                <span className="text-2xl">🌐</span>
-                <div>
-                  <div className="text-sm text-gray-400 font-mono">Live Demo</div>
-                  <a
-                    href={project.liveUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-green-400 hover:text-green-300 underline font-mono transition-colors duration-200"
-                  >
-                    {project.liveUrl}
-                  </a>
-                </div>
-              </div>
-            )}
-            {project.githubUrl && (
-              <div className="flex items-center space-x-3">
-                <span className="text-2xl">🐙</span>
-                <div>
-                  <div className="text-sm text-gray-400 font-mono">Source Code</div>
-                  <a
-                    href={project.githubUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-green-400 hover:text-green-300 underline font-mono transition-colors duration-200"
-                  >
-                    {project.githubUrl}
-                  </a>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       )}

@@ -6,6 +6,36 @@ import { Project } from "@/types";
 // Main projects data - based on professional experience
 export const projects: Project[] = [
   {
+    id: "SalonIQ",
+    name: "SalonIQ - Modern Salon Management Platform",
+    status: "in-progress",
+    description:
+      "A comprehensive salon management system built to solve everyday challenges that salon owners and customers face. Features smart service discovery, intelligent booking flow, real-time appointment management, and professional admin dashboard. SalonIQ eliminates phone tag frustrations and provides seamless booking experiences with auto-complete addresses, service management, and mobile-first design for both customers and salon staff.",
+    technologies: [
+      "React 18",
+      "Vite",
+      "Tailwind CSS",
+      "Node.js",
+      "Express.js",
+      "MongoDB",
+      "Mongoose",
+      "JWT Authentication",
+      "LocationIQ API",
+      "Cloudinary",
+      "Multer"
+    ],
+    debugCommand: "show --salon-iq",
+    codeSnippet: ``,
+    completionPercentage: 70,
+    githubUrl: "https://github.com/Oz-Abohazira/SalonIQ",
+    liveUrl: "https://salon-iq-nine.vercel.app/",
+    images: [
+      "/saloniq/dashboard.png",
+      "/saloniq/booking-flow.png", 
+      "/saloniq/service-management.png", 
+    ],
+  },
+  {
     id: "sitekick-website-generator",
     name: "Websites Generation and Deployment",
     status: "completed",
@@ -13,7 +43,6 @@ export const projects: Project[] = [
       "A Comprehensive backend API for generating and managing multi-page websites for local service businesses. Sitekick automatically creates professional websites with location-specific content, service pages, contact forms and admin controls with a powerful multi-template system and advanced google SEO optimizations.",
     technologies: [
       "Node.js",
-      "Express.js",
       "Vercel API",
       "HTML5/CSS3",
       "JavaScript ES6+",
@@ -80,6 +109,7 @@ function generateSiteConfig(subdomain, city, state, business_name) {
             <image:loc>\${logoUrl || "https:// \`
 `,
     completionPercentage: 100,
+    githubUrl: "https://github.com/Oz-Abohazira/SiteKick",
     images: [
       "/sitekick/sitekick-1.png", // API dashboard screenshot
       "/sitekick/sitekick-2.png", // Template system screenshot
@@ -197,7 +227,7 @@ function generateSiteConfig(subdomain, city, state, business_name) {
       });
     if (sub) this.subscriptions.add(sub);
   }`,
-    completionPercentage: 85,
+    completionPercentage: 95,
     images: [
       "/crm/dashboard.png",
       "/crm/calendar.png",

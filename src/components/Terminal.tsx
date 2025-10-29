@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { projects, debugCommands, personalInfo } from '@/data/projects';
 import { OutputContent, Project } from '@/types';
 import CodeEvolutionBio from './CodeEvolutionBio';
+import { ProjectOutput } from './output/ProjectOutput';
 
 interface TerminalLine {
   id: string;
@@ -17,90 +18,76 @@ export default function Terminal() {
   const [currentInput, setCurrentInput] = useState('');
   const [isTyping] = useState(false);
   const [outputContent, setOutputContent] = useState<OutputContent>({ type: 'default' });
+  const [showMatrixRain, setShowMatrixRain] = useState(true);
   const lineIdCounterRef = useRef(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const terminalRef = useRef<HTMLDivElement>(null);
 
-  // Initialize terminal with welcome message
+  // Matrix rain effect
   useEffect(() => {
-    // Start with dramatic typewriter for the first message
-    setTimeout(() => {
-      typewriterMessage('Welcome to the Interactive Portfolio Console', () => {
-        // Then continue with the rest of the messages using standard typewriter speed
-        const remainingMessages = [
-          `Initializing Oz Abohazira\'s Portfolio System...`,
-          'System Status: Online',
-          'Type "show --help" to see available commands',
-          ''
-        ];
+    if (!showMatrixRain) return;
 
-        remainingMessages.forEach((message, index) => {
-          setTimeout(() => {
-            addLine('output', message);
-          }, (index + 1) * 1000); // Slightly faster timing since typewriter is faster
-        });
-      });
-    }, 500); // Small delay before starting
-  }, []);
-
-  const typewriterMessage = (text: string, callback?: () => void) => {
-    lineIdCounterRef.current += 1;
-    const lineId = `line-${lineIdCounterRef.current}`;
+    const canvas = document.createElement('canvas');
+    canvas.style.position = 'fixed';
+    canvas.style.top = '0';
+    canvas.style.left = '0';
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+    canvas.style.pointerEvents = 'none';
+    canvas.style.zIndex = '1000';
+    canvas.style.background = 'rgba(0, 0, 0, 0.9)';
     
-    // Create empty line first
-    const newLine: TerminalLine = {
-      id: lineId,
-      type: 'output',
-      content: '',
-      timestamp: new Date()
-    };
-    setHistory(prev => [...prev, newLine]);
-
-    // Type each character
-    let currentText = '';
-    const characters = text.split('');
+    document.body.appendChild(canvas);
     
-    characters.forEach((char, index) => {
-      setTimeout(() => {
-        currentText += char;
-        setHistory(prev => 
-          prev.map(line => 
-            line.id === lineId 
-              ? { ...line, content: currentText + (index < characters.length - 1 ? '▋' : '') }
-              : line
-          )
-        );
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    const characters = "01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+    const drops = Array.from({ length: Math.floor(columns) }, () => 1);
+    
+    const draw = () => {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      ctx.fillStyle = '#00ff41';
+      ctx.font = `${fontSize}px monospace`;
+      
+      for (let i = 0; i < drops.length; i++) {
+        const text = characters[Math.floor(Math.random() * characters.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
         
-        // When finished typing, remove cursor and call callback
-        if (index === characters.length - 1) {
-          setTimeout(() => {
-            setHistory(prev => 
-              prev.map(line => 
-                line.id === lineId 
-                  ? { ...line, content: currentText }
-                  : line
-              )
-            );
-            callback?.();
-          }, 300);
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
         }
-      }, index * 80); // 80ms per character for dramatic effect
-    });
-  };
+        drops[i]++;
+      }
+    };
+    
+    const interval = setInterval(draw,18);
+    
+    // Clean up after 3 seconds
+    setTimeout(() => {
+      clearInterval(interval);
+      if (document.body.contains(canvas)) {
+        document.body.removeChild(canvas);
+      }
+      setShowMatrixRain(false);
+    }, 2750);
+    
+    return () => {
+      clearInterval(interval);
+      if (document.body.contains(canvas)) {
+        document.body.removeChild(canvas);
+      }
+    };
+  }, [showMatrixRain]);
 
-  // Auto-scroll to bottom when new content is added
-  useEffect(() => {
-    if (terminalRef.current) {
-      terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
-    }
-  }, [history]);
-
-  // Focus input when terminal is clicked
-  const focusInput = () => {
-    inputRef.current?.focus();
-  };
-
-  const addLine = (type: 'command' | 'output' | 'error', content: string) => {
+  const addLine = React.useCallback((type: 'command' | 'output' | 'error', content: string) => {
     lineIdCounterRef.current += 1;
     const lineId = `line-${lineIdCounterRef.current}`;
     
@@ -150,6 +137,105 @@ export default function Terminal() {
         }
       }, typeSpeed);
     }
+  }, []);
+
+  const finalizeBootSequence = React.useCallback(() => {
+    const finalMessages = [
+      '',
+      '✨ System initialization complete!',
+      'Portfolio console ready for exploration',
+      'Type "show --help" to discover available commands',
+      'Begin your journey through my digital portfolio',
+      ''
+    ];
+
+    finalMessages.forEach((msg, index) => {
+      setTimeout(() => {
+        addLine('output', msg);
+        if (index === finalMessages.length - 1) {
+          // Focus the input after boot sequence
+          setTimeout(() => {
+            inputRef.current?.focus();
+          }, 200);
+        }
+      }, index * 400);
+    });
+  }, [addLine]);
+
+  const showAsciiName = React.useCallback(() => {
+    const asciiArt = [
+      '═════',
+      'OZ ABOHAZIRA',           
+      'Full Stack Developer',           
+      'Code. Create. Innovate. Repeat.',
+      '════════════════════════',
+    ];
+
+    asciiArt.forEach((line, index) => {
+      setTimeout(() => {
+        addLine('output', line);
+        if (index === asciiArt.length - 1) {
+          setTimeout(() => {
+            finalizeBootSequence();
+          }, 300);
+        }
+      }, index * 200);
+    });
+  }, [addLine, finalizeBootSequence]);
+
+  const startBootSequence = React.useCallback(() => {
+    const bootMessages = [
+      { text: 'BIOS v2.4.1 - Portfolio System', delay: 100 },
+      { text: '', delay: 100 },
+      { text: 'Loading operating system...', delay: 300 },
+      { text: '████████████████████████ 100%', delay: 500 },
+      { text: '', delay: 200 },
+      { text: ' Location: Dunwoody, GA', delay: 200 },
+      { text: ' Network Status: Connected to Opportunities', delay: 200 },
+      { text: '', delay: 300 },
+    ];
+
+    let totalDelay = 0;
+    bootMessages.forEach((msg, index) => {
+      totalDelay += msg.delay;
+      setTimeout(() => {
+        if (msg.text) {
+          addLine('output', msg.text);
+        } else {
+          addLine('output', '');
+        }
+        
+        // After last boot message, show the dramatic ASCII name
+        if (index === bootMessages.length - 1) {
+          setTimeout(() => {
+            showAsciiName();
+          }, 500);
+        }
+      }, totalDelay);
+    });
+  }, [addLine, showAsciiName]);
+
+  // Initialize terminal with impressive boot sequence
+  useEffect(() => {
+    // Start matrix effect immediately
+    setTimeout(() => {
+      // After matrix effect, start boot sequence
+      setTimeout(() => {
+        startBootSequence();
+      }, 3200);
+    }, 100);
+  }, [startBootSequence]);
+
+  // Auto-scroll to bottom when new content is added
+  useEffect(() => {
+    if (terminalRef.current) {
+      terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
+    }
+  }, [history]);
+
+  // Focus input when terminal is clicked
+  const focusInput = () => {
+    inputRef.current?.focus();
   };
 
   const handleCommand = (command: string) => {
@@ -229,6 +315,23 @@ export default function Terminal() {
         });
         break;
 
+      case 'reset-progress':
+        addLine('output', 'Initiating system reset protocol...');
+        setTimeout(() => {
+          addLine('output', 'Clearing puzzle completion status...');
+          setTimeout(() => {
+            addLine('output', 'Resetting contact challenge progress...');
+            setTimeout(() => {
+              addLine('output', 'System reset complete. Puzzle and challenges have been reset.');
+              setTimeout(() => {
+                addLine('output', 'You can now complete the puzzle and challenges again!');
+                setOutputContent({ type: 'reset-progress' });
+              }, 400);
+            }, 400);
+          }, 400);
+        }, 300);
+        break;
+
       default:
         // Check if it's a project command
         const project = projects.find(p => p.debugCommand === command);
@@ -291,7 +394,7 @@ export default function Terminal() {
                 {debugCommands.filter(cmd => cmd !== 'show --commands' && cmd !== 'show --help').map((cmd, index) => (
                   <div 
                     key={cmd} 
-                    className="bg-gray-800 p-3 rounded border-l-4 border-cyan-400 hover:bg-gray-700 hover:border-cyan-300 cursor-pointer transition-all duration-300 group hover:translate-x-1 hover:shadow-lg animate-in fade-in slide-in-from-bottom-4"
+                    className="max-w-[99%] bg-gray-800 p-3 rounded border-l-4 border-cyan-400 hover:bg-gray-700 hover:border-cyan-300 cursor-pointer transition-all duration-300 group hover:translate-x-1 hover:shadow-lg animate-in fade-in slide-in-from-bottom-4"
                     style={{ animationDelay: `${index * 100}ms` }}
                     onClick={() => {
                       setCurrentInput(cmd);
@@ -307,7 +410,7 @@ export default function Terminal() {
                 {/* Show combined help commands at the bottom */}
                 <div 
                   key="help-commands" 
-                  className="bg-gray-800 p-3 rounded border-l-4 border-cyan-400 hover:bg-gray-700 hover:border-cyan-300 cursor-pointer transition-all duration-300 group hover:translate-x-1 hover:shadow-lg animate-in fade-in slide-in-from-bottom-4"
+                  className="max-w-[99%] bg-gray-800 p-3 rounded border-l-4 border-cyan-400 hover:bg-gray-700 hover:border-cyan-300 cursor-pointer transition-all duration-300 group hover:translate-x-1 hover:shadow-lg animate-in fade-in slide-in-from-bottom-4"
                   style={{ animationDelay: `${debugCommands.length * 100}ms` }}
                   onClick={() => {
                     setCurrentInput('show --help');
@@ -382,105 +485,46 @@ export default function Terminal() {
 
       case 'project':
         const project = outputContent.data as unknown as Project;
+        return <ProjectOutput project={project} />;
+
+      case 'reset-progress':
         return (
           <div className="space-y-6">
-            <div className="bg-gradient-to-r from-purple-900 to-blue-900 p-6 rounded-lg">
-              <h2 className="text-3xl font-bold text-cyan-400 mb-2">{project.name}</h2>
-              <div className="flex items-center space-x-4 mb-4">
-                <span className={`px-3 py-1 rounded text-sm font-medium ${
-                  project.status === 'completed' ? 'bg-green-600 text-white' :
-                  project.status === 'planned' ? 'bg-blue-600 text-white' :
-                  project.status === 'encrypted' ? 'bg-red-600 text-white' :
-                  'bg-yellow-600 text-white'
-                }`}>
-                  {project.status.toUpperCase()}
-                </span>
-                {project.completionPercentage !== undefined && (
-                  <span className="text-yellow-400">
-                    {project.completionPercentage}% Complete
-                  </span>
-                )}
-              </div>
-              <p className="text-gray-300 leading-relaxed">{project.description}</p>
+            <div className="bg-gradient-to-r from-green-900 to-blue-900 p-6 rounded-lg">
+              <h2 className="text-3xl font-bold text-green-400 mb-4">🔄 System Reset Complete</h2>
+              <p className="text-gray-300 leading-relaxed mb-4">
+                All puzzle and challenge progress has been successfully reset. You can now:
+              </p>
+              <ul className="list-disc list-inside text-gray-300 space-y-2">
+                <li>Complete the contact form puzzle again</li>
+                <li>Re-attempt any previously solved challenges</li>
+                <li>Experience the portfolio journey fresh</li>
+              </ul>
             </div>
-
+            
             <div className="bg-gray-800 p-4 rounded">
-              <h3 className="text-lg font-semibold text-cyan-400 mb-3">Technologies Used</h3>
-              <div className="flex flex-wrap gap-2">
-                {project.technologies.map((tech, index) => (
-                  <span 
-                    key={index}
-                    className="bg-blue-600 text-white px-3 py-1 rounded text-sm"
-                  >
-                    {tech}
-                  </span>
-                ))}
+              <h3 className="text-lg font-semibold text-cyan-400 mb-3">Next Steps</h3>
+              <p className="text-gray-300 mb-3">Start exploring the portfolio again with:</p>
+              <div className="space-y-2">
+                <code className="block bg-gray-900 p-2 rounded text-green-400">show --help</code>
+                <code className="block bg-gray-900 p-2 rounded text-green-400">show --about</code>
+                <code className="block bg-gray-900 p-2 rounded text-green-400">show --skills</code>
               </div>
             </div>
-
-            {project.codeSnippet && project.status === 'completed' && (
-              <div className="bg-gray-900 p-4 rounded">
-                <h3 className="text-lg font-semibold text-cyan-400 mb-3">Code Sample</h3>
-                <pre className="text-green-400 text-sm overflow-x-auto">
-                  <code>{project.codeSnippet}</code>
-                </pre>
-              </div>
-            )}
-
-            {project.status === 'completed' && (project.liveUrl || project.githubUrl) && (
-              <div className="flex space-x-4">
-                {project.liveUrl && (
-                  <a
-                    href={project.liveUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-cyan-600 hover:bg-cyan-700 text-white px-6 py-2 rounded transition-colors"
-                  >
-                    View Live Demo
-                  </a>
-                )}
-                {project.githubUrl && (
-                  <a
-                    href={project.githubUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded transition-colors"
-                  >
-                    View Source Code
-                  </a>
-                )}
-              </div>
-            )}
-
-            {project.status === 'planned' && project.expectedCompletion && (
-              <div className="bg-blue-900 p-4 rounded">
-                <p className="text-blue-300">
-                  <span className="font-semibold">Expected Completion:</span> {project.expectedCompletion}
-                </p>
-              </div>
-            )}
-
-            {project.status === 'encrypted' && (
-              <div className="bg-red-900 p-4 rounded border border-red-600">
-                <p className="text-red-300 text-center">
-                  🔒 This project is currently classified and under development
-                </p>
-              </div>
-            )}
           </div>
         );
 
       default:
         return (
           <div className="flex flex-col items-center justify-center h-full text-center">
-            <div className="text-6xl mb-4">💻</div>
-            <h2 className="text-2xl font-bold text-cyan-400 mb-2">Oz Abohazira Portfolio</h2>
-            <p className="text-gray-400 mb-6">Interactive Developer Console</p>
-            <p className="text-gray-500">
+            <div className="text-6xl mb-4 animate-bounce">💻</div>
+            <h2 className="text-2xl font-bold text-cyan-400 mb-2 animate-in fade-in slide-in-from-bottom-4">Oz Abohazira Portfolio</h2>
+            <p className="text-gray-400 mb-6 animate-in fade-in slide-in-from-bottom-4" style={{ animationDelay: '200ms' }}>Interactive Developer Console</p>
+            <p className="text-gray-500 animate-in fade-in slide-in-from-bottom-4" style={{ animationDelay: '400ms' }}>
               Use the terminal on the left to explore my projects and skills.
             </p>
-            <p className="text-yellow-400 mt-2">
-              Start with: <code>show --help</code>
+            <p className="text-yellow-400 mt-2 animate-in fade-in slide-in-from-bottom-4 animate-pulse" style={{ animationDelay: '600ms' }}>
+              Start with: <code className="bg-gray-800 px-2 py-1 rounded">show --help</code>
             </p>
           </div>
         );
@@ -494,7 +538,7 @@ export default function Terminal() {
           <div className="mb-4">
             <button
               onClick={() => setOutputContent({ type: 'help' })}
-              className="flex items-center space-x-2 bg-gray-800 hover:bg-gray-700 text-cyan-400 px-4 py-2 rounded transition-colors"
+              className="flex items-center space-x-2 bg-gray-800 hover:bg-gray-700 text-cyan-400 px-4 py-2 rounded transition-colors hover:shadow-lg hover:scale-105 transform duration-200"
             >
               <span>←</span>
               <span>Back to Commands</span>
@@ -503,7 +547,7 @@ export default function Terminal() {
         )}
         
         {/* Main Content */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-none">
           {renderContent()}
         </div>
       </div>
@@ -566,7 +610,7 @@ export default function Terminal() {
                 placeholder={isTyping ? "Processing..." : "Enter debug command..."}
                 autoFocus
               />
-              <span className="animate-pulse text-green-400 animate-bounce">|</span>
+              <span className="animate-pulse text-green-400">|</span>
             </form>
           </div>
         </div>

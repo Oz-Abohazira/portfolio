@@ -1,5 +1,5 @@
-import ModularTerminal from '@/components/ModularTerminal';
+import Terminal from '@/components/Terminal';
 
 export default function Home() {
-  return <ModularTerminal />;
+  return <Terminal />;
 }
